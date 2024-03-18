@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth'); // Import the authentication middleware
 const Expense = require('../models/Expense'); // Make sure this path matches your file structure
+const Project = require('../models/Project');
 
 // Post a new expense - Protected by auth
 router.post('/', auth, async (req, res) => {
