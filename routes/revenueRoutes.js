@@ -14,7 +14,7 @@ router.post('/', auth, async (req, res) => {
         const newRevenue = await revenue.save();
         // Update the associated project
         await Project.findByIdAndUpdate(req.body.project, {
-            $push: { expenses: newExpense._id } // Assuming 'project' in req.body is the project's ID
+            $push: { revenues: newRevenue._id } // Assuming 'project' in req.body is the project's ID
         });
         res.status(201).json(newRevenue);
     } catch (err) {
