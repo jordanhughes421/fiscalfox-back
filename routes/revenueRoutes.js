@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth'); // Import the authentication middleware
 const Revenue = require('../models/Revenue'); // Make sure this path matches your file structure
+const Project = require('../models/Project');
 
 // Post a new revenue - Protected by auth
 router.post('/', auth, async (req, res) => {
@@ -11,6 +12,10 @@ router.post('/', auth, async (req, res) => {
     });
     try {
         const newRevenue = await revenue.save();
+        // Update the associated project
+        await Project.findByIdAndUpdate(req.body.project, {
+            $push: { expenses: newExpense._id } // Assuming 'project' in req.body is the project's ID
+        });
         res.status(201).json(newRevenue);
     } catch (err) {
         res.status(400).json({ message: err.message });
