@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth'); // Import the authentication middleware
 const Project = require('../models/Project'); // Assuming you have this model set up
+const Expense = require('../models/Expense');
+const Revenue = require('../models/Revenue');
 
 // Post a new project - Protected by auth
 router.post('/', auth, async (req, res) => {
