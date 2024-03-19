@@ -68,13 +68,28 @@ router.patch('/:id', auth, getRevenue, async (req, res) => {
     }
 });
 
-router.delete('/:id', auth, getRevenue, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
-        await res.revenue.remove();
-        res.json({ message: 'Deleted Revenue' });
+        // Directly delete the revenue document and capture the result
+        const deletedRevenue = await Revenue.findByIdAndDelete(req.params.id);
+
+        if (!deletedRevenue) {
+            return res.status(404).json({ message: 'Revenue not found' });
+        }
+
+        // Assuming your Project model has an array of revenue IDs
+        // Find the project associated with the deleted revenue and remove the revenue ID from its array
+        // Here, deletedRevenue._id refers to the ID of the revenue that was just deleted
+        await Project.updateMany(
+            { revenues: deletedRevenue._id }, // Match projects with this revenue ID
+            { $pull: { revenues: deletedRevenue._id } } // Remove the revenue ID from the projects' revenues array
+        );
+
+        res.json({ message: 'Deleted Revenue and removed from its associated project' });
     } catch (err) {
+        console.error("Error deleting revenue:", err);
         res.status(500).json({ message: err.message });
     }
-});
+});6
 
 module.exports = router;

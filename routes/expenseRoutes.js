@@ -68,13 +68,30 @@ router.patch('/:id', auth, getExpense, async (req, res) => {
     }
 });
 
-router.delete('/:id', auth, getExpense, async (req, res) => {
+
+router.delete('/:id', auth, async (req, res) => {
     try {
-        await res.expense.remove();
-        res.json({ message: 'Deleted Expense' });
+        // Directly delete the expense document and capture the result
+        const deletedExpense = await Expense.findByIdAndDelete(req.params.id);
+
+        if (!deletedExpense) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
+
+        // Assuming your Project model has an array of expense IDs
+        // Find the project associated with the deleted expense and remove the expense ID from its array
+        // Here, deletedExpense._id refers to the ID of the expense that was just deleted
+        await Project.updateMany(
+            { expenses: deletedExpense._id }, // Match projects with this expense ID
+            { $pull: { expenses: deletedExpense._id } } // Remove the expense ID from the projects' expenses array
+        );
+
+        res.json({ message: 'Deleted Expense and removed from its associated project' });
     } catch (err) {
+        console.error("Error deleting expense:", err);
         res.status(500).json({ message: err.message });
     }
 });
+
 
 module.exports = router;

@@ -63,12 +63,27 @@ router.patch('/:id', auth, getProject, async (req, res) => {
     }
 });
 
-router.delete('/:id', auth, getProject, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
-        await res.project.remove();
-        res.json({ message: 'Deleted Project' });
+        const projectId = req.params.id;
+
+        // Delete all expenses associated with the project
+        await Expense.deleteMany({ project: projectId });
+
+        // Delete all revenues associated with the project
+        await Revenue.deleteMany({ project: projectId });
+
+        // Then, delete the project itself
+        const deletedProject = await Project.findByIdAndDelete(projectId);
+        
+        if (!deletedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        res.json({ message: 'Deleted Project and its associated expenses and revenues' });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 

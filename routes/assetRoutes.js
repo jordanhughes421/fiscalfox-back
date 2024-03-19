@@ -64,11 +64,17 @@ router.patch('/:id', auth, getAsset, async (req, res) => {
 });
 
 // Delete an asset, ensuring the asset belongs to the user
-router.delete('/:id', auth, getAsset, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
-        await res.asset.remove();
+        const deletedAsset = await Asset.findByIdAndDelete(req.params.id);
+
+        if (!deletedAsset) {
+            return res.status(404).json({ message: 'Asset not found' });
+        }
+
         res.json({ message: 'Deleted Asset' });
     } catch (err) {
+        console.error("Error deleting asset:", err);
         res.status(500).json({ message: err.message });
     }
 });
