@@ -56,14 +56,24 @@ router.get('/:id', auth, getRevenue, (req, res) => {
 });
 
 router.patch('/:id', auth, getRevenue, async (req, res) => {
-    if (req.body.amount != null) {
-        res.revenue.amount = req.body.amount;
-    }
-    // Add other fields as necessary
+    // Retrieve the revenue document from the response (assumed to be added by the getRevenue middleware)
+    const revenue = res.revenue;
+
+    // Iterate over the keys in the request body
+    Object.keys(req.body).forEach(key => {
+        // Update the revenue document if the key exists in req.body and is not null
+        if (req.body[key] != null) {
+            revenue[key] = req.body[key];
+        }
+    });
+
     try {
-        const updatedRevenue = await res.revenue.save();
+        // Attempt to save the updated revenue document
+        const updatedRevenue = await revenue.save();
+        // Respond with the updated revenue data
         res.json(updatedRevenue);
     } catch (err) {
+        // Handle potential errors, such as validation errors
         res.status(400).json({ message: err.message });
     }
 });

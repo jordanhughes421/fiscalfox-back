@@ -48,22 +48,27 @@ async function getEmployee(req, res, next) {
 }
 
 // Protected routes with getEmployee middleware ensuring the employee belongs to the user
-router.get('/:id', auth, getEmployee, (req, res) => {
-    res.json(res.employee);
-});
-
 router.patch('/:id', auth, getEmployee, async (req, res) => {
-    if (req.body.name != null) {
-        res.employee.name = req.body.name;
-    }
-    // Add other fields as necessary
+    // Assume getEmployee middleware retrieves the employee document and attaches it to res.employee
+
+    Object.keys(req.body).forEach(key => {
+        // Check if the key exists in req.body and is not null
+        if (req.body[key] != null) {
+            res.employee[key] = req.body[key];
+        }
+    });
+
     try {
+        // Attempt to save the updated employee document
         const updatedEmployee = await res.employee.save();
+        // Respond with the updated employee data
         res.json(updatedEmployee);
     } catch (err) {
+        // Handle potential errors, such as validation errors
         res.status(400).json({ message: err.message });
     }
 });
+
 
 router.delete('/:id', auth, getEmployee, async (req, res) => {
     try {

@@ -54,19 +54,26 @@ router.get('/:id', auth, getExpense, (req, res) => {
 });
 
 router.patch('/:id', auth, getExpense, async (req, res) => {
-    // Update fields here. For example:
-    if (req.body.amount != null) {
-        res.expense.amount = req.body.amount;
-    }
-    // Add other fields as necessary
+    // Assume getExpense middleware retrieves the expense document and attaches it to res.expense
+
+    Object.keys(req.body).forEach(key => {
+        // Check if the key exists in req.body and is not null
+        if (req.body[key] != null) {
+            res.expense[key] = req.body[key];
+        }
+    });
 
     try {
+        // Attempt to save the updated expense document
         const updatedExpense = await res.expense.save();
+        // Respond with the updated expense data
         res.json(updatedExpense);
     } catch (err) {
+        // Handle potential errors, such as validation errors
         res.status(400).json({ message: err.message });
     }
 });
+
 
 
 router.delete('/:id', auth, async (req, res) => {

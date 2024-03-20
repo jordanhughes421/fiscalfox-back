@@ -53,14 +53,24 @@ router.get('/:id', auth, getProject, (req, res) => {
 });
 
 router.patch('/:id', auth, getProject, async (req, res) => {
-    if (req.body.name != null) {
-        res.project.name = req.body.name;
-    }
-    // Add other fields as necessary
+    // Retrieve the project document from the response (assumed to be added by the getProject middleware)
+    const project = res.project;
+
+    // Iterate over the keys in the request body
+    Object.keys(req.body).forEach(key => {
+        // Update the project document if the key exists in req.body and is not null
+        if (req.body[key] != null) {
+            project[key] = req.body[key];
+        }
+    });
+
     try {
-        const updatedProject = await res.project.save();
+        // Attempt to save the updated project document
+        const updatedProject = await project.save();
+        // Respond with the updated project data
         res.json(updatedProject);
     } catch (err) {
+        // Handle potential errors, such as validation errors
         res.status(400).json({ message: err.message });
     }
 });

@@ -51,14 +51,22 @@ router.get('/:id', auth, getAsset, (req, res) => {
 
 // Update an asset, ensuring the asset belongs to the user
 router.patch('/:id', auth, getAsset, async (req, res) => {
-    if (req.body.name != null) {
-        res.asset.name = req.body.name;
-    }
-    // Add other fields here as necessary
+    // Assume getAsset middleware retrieves the asset document and attaches it to res.asset
+
+    Object.keys(req.body).forEach(key => {
+        // Check if the key exists in req.body and is not null
+        if (req.body[key] != null) {
+            res.asset[key] = req.body[key];
+        }
+    });
+
     try {
+        // Attempt to save the updated asset document
         const updatedAsset = await res.asset.save();
+        // Respond with the updated asset data
         res.json(updatedAsset);
     } catch (err) {
+        // Handle potential errors, such as validation errors
         res.status(400).json({ message: err.message });
     }
 });
