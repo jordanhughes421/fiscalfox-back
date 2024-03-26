@@ -27,6 +27,12 @@ const revenueRoutes = require('./routes/revenueRoutes');
 const assetRoutes = require('./routes/assetRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const authRoutes = require('./routes/authRoutes');
+const clientRoutes = require('./routes/clientRoutes');
+const communicationRoutes = require('./routes/communicationRoutes');
+const invoiceRoutes = require('./routes/invoiceRoutes');
+const quoteRoutes = require('./routes/quoteRoutes');
+
+
 
 app.use('/projects', projectRoutes);
 app.use('/expense', expenseRoutes);
@@ -34,6 +40,10 @@ app.use('/revenue', revenueRoutes);
 app.use('/asset', assetRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/auth', authRoutes);
+app.use('/client', clientRoutes);
+app.use('/communication', communicationRoutes);
+app.use('/invoice', invoiceRoutes);
+app.use('/quote', quoteRoutes);
 
 
 async function run() {
