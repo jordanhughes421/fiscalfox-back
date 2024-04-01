@@ -31,6 +31,7 @@ const clientRoutes = require('./routes/clientRoutes');
 const communicationRoutes = require('./routes/communicationRoutes');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const quoteRoutes = require('./routes/quoteRoutes');
+const roleRoutes = require('./routes/roleRoutes')
 
 
 
@@ -44,6 +45,7 @@ app.use('/client', clientRoutes);
 app.use('/communication', communicationRoutes);
 app.use('/invoice', invoiceRoutes);
 app.use('/quote', quoteRoutes);
+app.use('/role', roleRoutes);
 
 
 async function run() {
