@@ -5,6 +5,8 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const passport = require('passport');
+require('./config/passport-setup');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -18,6 +20,7 @@ const client = new MongoClient(uri, {
 
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 

@@ -8,7 +8,8 @@ const UserSchema = new mongoose.Schema({
 	firstName: { type: String, required: false }, // Optional based on your requirements
 	lastName: { type: String, required: false }, // Optional based on your requirements
 	companyName: { type: String, required: false }, // For users associated with a company
-	profilePicture: { type: String, required: false }, // Could store a URL to the image
+	profilePicture: { type: String, required: false },
+	googleId: { type: String, required: false }, // Could store a URL to the image
 	role: {
     	type: mongoose.Schema.Types.ObjectId,
     	ref: 'Role',
