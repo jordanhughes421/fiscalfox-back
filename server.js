@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const passport = require('passport');
 require('./config/passport-setup');
+const session = require('express-session');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -18,9 +19,20 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+app.use(session({
+  secret: process.env.GOOGLE_CLIENT_SECRET, // This should be a long, random string to keep sessions secure
+  resave: false, // Don't save session if unmodified
+  saveUninitialized: false, // Don't create session until something stored
+  cookie: {
+    //secure: true, // Requires HTTPS
+    maxAge: 1000 * 60 * 60 * 24 // 24 hours
+  }
+}));
+
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
