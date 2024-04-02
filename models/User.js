@@ -21,6 +21,10 @@ UserSchema.pre('save', async function(next) {
     if(this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 8);
     }
+	// Set the user's role to "admin" if it's not set (optional, if you want to enforce this at the model level)
+	if (!this.role) {
+		this.role = mongoose.Types.ObjectId("660ab6e4ed0094b616c86de2");
+	}
     next();
 });
 
