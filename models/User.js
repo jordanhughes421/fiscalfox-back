@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
 	role: {
     	type: mongoose.Schema.Types.ObjectId,
     	ref: 'Role',
-    	required: true
+    	required: false
 	}
 }, { timestamps: true });
 // Hash password before saving
