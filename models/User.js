@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
     	type: mongoose.Schema.Types.ObjectId,
     	ref: 'Role',
     	required: false,
-		default: mongoose.Types.ObjectId('660ab6e4ed0094b616c86de2')
+		default: new mongoose.Types.ObjectId('660ab6e4ed0094b616c86de2')
 	}
 }, { timestamps: true });
 // Hash password before saving
