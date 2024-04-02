@@ -88,7 +88,7 @@ router.get('/auth/google/callback',
     // On successful authentication, issue a token or redirect as needed
     const token = jwt.sign({ id: req.user._id }, secretKey, { expiresIn: '1h' });
     // You might redirect the user to the frontend with the token
-    // res.redirect(`/frontend-path?token=${token}`);
+    res.redirect(`https://projectfinancetracker-front-c3c5e9b026ae.herokuapp.com/`);
     // Or send the token directly if handling authentication within a SPA
     res.send({ token });
   }
