@@ -79,18 +79,36 @@ router.post('/login', async (req, res) => {
 
 // Google OAuth Routes
 router.get('/auth/google',
+  (req, res, next) => {
+    console.log('Initiating Google OAuth flow');
+    next();
+  },
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
+
 router.get('/auth/google/callback', 
+  (req, res, next) => {
+    console.log('Received callback from Google', req.query);
+    next();
+  },
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
+    console.log('User authenticated successfully', req.user);
+
     // On successful authentication, issue a token or redirect as needed
     const token = jwt.sign({ id: req.user._id }, secretKey, { expiresIn: '1h' });
+    console.log('JWT token generated', token);
+
+    // Option based on your application's need
     // You might redirect the user to the frontend with the token
+    console.log(`Redirecting user to frontend with token...`);
     res.redirect(`https://projectfinancetracker-front-c3c5e9b026ae.herokuapp.com/?token=${token}`);
+
     // Or send the token directly if handling authentication within a SPA
-    //res.send({ token });
+    // Uncomment the line below if you decide to go with this option and comment out the redirect above
+    // console.log('Sending JWT token directly to user');
+    // res.send({ token });
   }
 );
 
